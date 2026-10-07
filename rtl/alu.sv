@@ -28,4 +28,5 @@ module alu #(
 
         zero = (result == '0); // Set zero flag if result is zero
     end
+    
 endmodule
