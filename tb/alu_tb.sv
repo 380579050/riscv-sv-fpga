@@ -150,4 +150,5 @@ module alu_tb;
             $display("Test SLTU passed: expected 0, got %0d", result);
         end
     end   
+    
 endmodule
