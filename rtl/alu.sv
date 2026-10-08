@@ -27,6 +27,5 @@ module alu #(
         endcase
 
         zero = (result == '0); // Set zero flag if result is zero
-    end
-    
+    end   
 endmodule

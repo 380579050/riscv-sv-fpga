@@ -338,4 +338,65 @@ module alu_tb;
 
     end
 
+
+
+    task test_alu(
+    input logic [WIDTH-1:0] test_a,
+    input logic [WIDTH-1:0] test_b,
+    input logic [3:0]       test_op,
+    input logic [WIDTH-1:0] expected_result,
+    input logic             expected_zero
+    );
+    begin
+        a = test_a;
+        b = test_b;
+        alu_op = test_op;
+        
+        #10;
+
+        if (result !== expected_result || zero !== expected_zero) begin
+            $display(
+                "FAILED: a=%0d b=%0d result=%0d expected=%0d",
+                test_a, test_b, result, expected_result
+            );
+            end else begin
+                $display(
+                "PASSED: a=%0d b=%0d result=%0d",
+                test_a, test_b, result
+            );
+    end
+    end
+    endtask
+
+    // Testbench starts
+    initial begin
+        // ADD   |   a     |    b        |    op  |  result |   zero
+        test_alu(WIDTH'(10), WIDTH'(20), 4'b0000, WIDTH'(30), 1'b0);
+        // SUBTRACT
+        test_alu(WIDTH'(20), WIDTH'(10), 4'b0001, WIDTH'(10), 1'b0);
+        // AND
+        test_alu(WIDTH'(8'b1010_1010), WIDTH'(8'b1101_0101), 4'b0010, WIDTH'(8'b1000_0000), 1'b0);
+        // OR
+        test_alu(WIDTH'(8'b1010_1010), WIDTH'(8'b1101_0101), 4'b0011, WIDTH'(8'b1111_1111), 1'b0);
+        // XOR
+        test_alu(WIDTH'(8'b1010_1010), WIDTH'(8'b1111_1111), 4'b0100, WIDTH'(8'b0101_0101), 1'b0);
+        // SLL
+        test_alu(WIDTH'(1), WIDTH'(2), 4'b0101, WIDTH'(4), 1'b0);
+        // SRL
+        test_alu(WIDTH'(4), WIDTH'(2), 4'b0110, WIDTH'(1), 1'b0);
+        // SRA
+        test_alu(WIDTH'(-8), WIDTH'(2), 4'b0111, WIDTH'(-2), 1'b0);
+        // SLT True case
+        test_alu(WIDTH'(-1), WIDTH'(1), 4'b1000, WIDTH'(1), 1'b0);
+        //SLT equality case
+        test_alu(WIDTH'(5), WIDTH'(5), 4'b1000, WIDTH'(0), 1'b1);
+        // SLT False case
+        test_alu(WIDTH'(5), WIDTH'(-5), 4'b1000, WIDTH'(0), 1'b1);
+        // SLTU True case
+        test_alu(WIDTH'(5), WIDTH'(10), 4'b1001, WIDTH'(1), 1'b0);
+        // SLTU False case
+        test_alu(WIDTH'(-1), WIDTH'(1), 4'b1001, WIDTH'(0), 1'b1);
+
+        $finish;
+    end
 endmodule
